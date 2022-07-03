@@ -29,7 +29,7 @@ checksum(arrp)
 }
 function printline(pattern, len)
 {
-        printf "%s %5.2f %s", pattern, len, " "
+        printf "%s %5.2f %s", pattern, int(len), " "
         for (i = 1; i <= len; i++)
                 printf "%s", "*"
         printf "\n"

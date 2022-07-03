@@ -24,7 +24,7 @@ checksum(arr)
 }
 function printline(pattern, len)
 {
-        printf "%s %4s %s", pattern, len, " "
+        printf "%s %4s %s", pattern, int(len), " "
         for (i = 1; i <= len; i++)
                 printf "%s", "*"
         printf "\n"

@@ -20,23 +20,45 @@ file_exist() {
 		die "Can\`t read $OPTARG file"
 	fi
 }
+parse_line() {
+	line="$1"
+	PAT="$2"
+	#echo "D F line: $line"
+	#echo "D F PAT: $PAT"
+	step=${#BPAT}
+	for (( i=0; i<${#line}; i++ )); do
+		str="${line:$i:step}"
+		if [[ $str == $BPAT ]]; then
+			VAR="${line:($i+step)}"
+			while [[ $VAR =~ $EPAT.* ]]; do
+				echo "WHILE $VAR"
+				VAR=${VAR%%$EPAT*}
+			done
+			#VAR=${VAR%%$EPAT*}
+			echo "RESULT - $VAR"
+		fi
+		# echo "$str"
+	done
+}
 parse_file() {
 	file_template="$1"
 	file_result="$2"
-	BPAT="<%="
-	EPAT="=%>"
 	cat $file_template | while read line; do
-		echo $line
-		step=${#BPAT}
-		for (( i=0; i<${#line}; i++ )); do
-			str="${line:$i:step}"
-			if [[ $str == $BPAT ]]; then
-				echo "${line:($i+step)}"
-			fi
-			# echo "$str"
-		done
+		echo "DEBUG: $line"
+		#vstavit WHILE s RegEx and do Zamena Patterna
+		parse_line "$line" $BPAT
+		#step=${#BPAT}
+		#for (( i=0; i<${#line}; i++ )); do
+		#	str="${line:$i:step}"
+		#	if [[ $str == $BPAT ]]; then
+		#		echo "${line:($i+step)}"
+		#	fi
+		#	# echo "$str"
+		#done
 	done
 }
+BPAT="<%="
+EPAT="=%>"
 if [[ $# -eq 0 ]]; then
 	echo "Invalid arguments number"
 	exit_abnormal

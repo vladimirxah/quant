@@ -23,6 +23,8 @@ file_exist() {
 parse_file() {
 	file_template="$1"
 	file_result="$2"
+	BPAT="<%="
+	EPAT="=%>"
 	cat $file_template | while read line; do
 		echo $line
 	done

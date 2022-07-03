@@ -62,11 +62,11 @@ parse_line() {
 parse_file() {
 	file_template="$1"
 	file_result="$2"
-	echo "" > $file_result
+	#echo "" > $file_result
 	cat $file_template | while read line; do
 		#echo "DEBUG: $line"
 		#vstavit WHILE s RegEx and do Zamena Patterna
-		parse_line "$line" $BPAT >> $file_result
+		echo $(parse_line "$line" $BPAT) # >> $file_result
 		#step=${#BPAT}
 		#for (( i=0; i<${#line}; i++ )); do
 		#	str="${line:$i:step}"
@@ -98,12 +98,14 @@ while getopts t:r:-: OPT; do
 done
 shift $((OPTIND-1)) # remove parsed options and args from $@ list
 #`touch "$RESULT"`
-if [[ ! -e "$RESULT" ]]; then
+if [[ ! -e "$RESULT" && $RESULT != "" ]]; then
 	`touch "$RESULT"`
 	if [ $? -ne 0 ]; then
 		die "Can\`t write to result FILE"
 	fi
-elif [[ ! -w "$RESULT" ]]; then
+elif [[ ! -w "$RESULT" && $RESULT != "" ]]; then
 	die "Can\`t write to result FILE"
+elif [[ $RESULT != "" ]]; then
+	echo "" > $RESULT
+	parse_file $TEMPLATE >> $RESULT
 fi
-parse_file $TEMPLATE $RESULT

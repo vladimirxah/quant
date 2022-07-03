@@ -35,7 +35,12 @@ parse_line() {
 				VAR=${VAR%%=%>*}
 			done
 			#VAR=${VAR%%$EPAT*}
-			if [[ ! $VAR =~ $BPAT ]]; then echo "RESULT - $VAR"; fi
+			#eval "ENVVAR=\$$VAR"
+			if [[ ! $VAR =~ $BPAT ]]; then
+				echo "RESULT - $VAR"
+				eval "ENVVAR=\"\$$VAR\""
+				echo "RESULTE- $ENVVAR"
+			fi
 		fi
 		# echo "$str"
 	done

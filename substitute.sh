@@ -22,14 +22,16 @@ file_exist() {
 }
 parse_line() {
 	line="$1"
+	line_for=$line
 	PAT="$2"
 	#echo "D F line: $line"
 	#echo "D F PAT: $PAT"
 	step=${#BPAT}
-	for (( i=0; i<${#line}; i++ )); do
-		str="${line:$i:step}"
+	declare -A pairs
+	for (( i=0; i<${#line_for}; i++ )); do
+		str="${line_for:$i:step}"
 		if [[ $str == $BPAT ]]; then
-			VAR="${line:($i+step)}"
+			VAR="${line_for:($i+step)}"
 			while [[ $VAR =~ $EPAT.* ]]; do
 				#echo "WHILE $VAR"
 				VAR=${VAR%%=%>*}
@@ -37,21 +39,34 @@ parse_line() {
 			#VAR=${VAR%%$EPAT*}
 			#eval "ENVVAR=\$$VAR"
 			if [[ ! $VAR =~ $BPAT ]]; then
-				echo "RESULT - $VAR"
+				#echo "RESULT - $VAR"
 				eval "ENVVAR=\"\$$VAR\""
-				echo "RESULTE- $ENVVAR"
+				#echo "RESULTE- $ENVVAR"
+				line=${line/$BPAT$VAR$EPAT/"$ENVVAR"}
+				#pairs["$VAR"]="$ENVVAR"
 			fi
 		fi
 		# echo "$str"
 	done
+#if [[ ${#pairs[@]} -eq 0 ]]; then
+#	echo $line
+#	return
+#fi
+#for key in "${!pairs[@]}"; do
+#	echo "\tRESULT - $key"
+#	echo "\tRESULTE- ${pairs[$key]}"
+#	line=${line/$BPAT$key$EPAT/"${pairs[$key]}"}
+#done
+	echo $line
 }
 parse_file() {
 	file_template="$1"
 	file_result="$2"
+	echo "" > $file_result
 	cat $file_template | while read line; do
-		echo "DEBUG: $line"
+		#echo "DEBUG: $line"
 		#vstavit WHILE s RegEx and do Zamena Patterna
-		parse_line "$line" $BPAT
+		parse_line "$line" $BPAT >> $file_result
 		#step=${#BPAT}
 		#for (( i=0; i<${#line}; i++ )); do
 		#	str="${line:$i:step}"

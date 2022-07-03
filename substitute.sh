@@ -57,16 +57,21 @@ parse_line() {
 #	echo "\tRESULTE- ${pairs[$key]}"
 #	line=${line/$BPAT$key$EPAT/"${pairs[$key]}"}
 #done
-	echo $line
+	echo -E $line
 }
 parse_file() {
 	file_template="$1"
 	file_result="$2"
 	#echo "" > $file_result
-	cat $file_template | while read line; do
+	for line in `cat $file_template`; do
 		#echo "DEBUG: $line"
 		#vstavit WHILE s RegEx and do Zamena Patterna
-		echo $(parse_line "$line" $BPAT) # >> $file_result
+		#echo -n "E: "
+		#echo -E ${line}
+		#echo -n "P: "
+		#printf "%s\n" "$line"
+		#echo -n "F: "
+		echo -E $(parse_line "$line" $BPAT) # >> $file_result
 		#step=${#BPAT}
 		#for (( i=0; i<${#line}; i++ )); do
 		#	str="${line:$i:step}"

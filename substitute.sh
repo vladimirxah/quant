@@ -31,11 +31,11 @@ parse_line() {
 		if [[ $str == $BPAT ]]; then
 			VAR="${line:($i+step)}"
 			while [[ $VAR =~ $EPAT.* ]]; do
-				echo "WHILE $VAR"
-				VAR=${VAR%%$EPAT*}
+				#echo "WHILE $VAR"
+				VAR=${VAR%%=%>*}
 			done
 			#VAR=${VAR%%$EPAT*}
-			echo "RESULT - $VAR"
+			if [[ ! $VAR =~ $BPAT ]]; then echo "RESULT - $VAR"; fi
 		fi
 		# echo "$str"
 	done

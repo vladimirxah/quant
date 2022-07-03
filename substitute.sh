@@ -20,6 +20,13 @@ file_exist() {
 		die "Can\`t read $OPTARG file"
 	fi
 }
+parse_file() {
+	file_template="$1"
+	file_result="$2"
+	cat $file_template | while read line; do
+		echo $line
+	done
+}
 if [[ $# -eq 0 ]]; then
 	echo "Invalid arguments number"
 	exit_abnormal
@@ -32,17 +39,19 @@ while getopts t:r:-: OPT; do
 	fi
 	case "$OPT" in
 		t | template )	needs_arg; file_exist; TEMPLATE="$OPTARG" ;;
-		r | result )		needs_arg; RESULT="$OPTARG" ;;
-		??* )						die "Illegal option --$OPT" ;;
-		? )							exit 2 ;;	# bad short option (error reported via getopts)
+		r | result )	needs_arg; RESULT="$OPTARG" ;;
+		??* )		die "Illegal option --$OPT" ;;
+		? )		exit 2 ;;	# bad short option (error reported via getopts)
 	esac
 done
-shift $((OPTIND-1))
-#if [[ ! -r $1 ]]; then
-#	echo "Can\`t find file to parse"
-#	exit_abnormal
-#fi
-#if [[ ! -w $2 ]]; then
-#	echo "Can\`t write to target file"
-#	exit_abnormal
-#fi
+shift $((OPTIND-1)) # remove parsed options and args from $@ list
+#`touch "$RESULT"`
+if [[ ! -e "$RESULT" ]]; then
+	`touch "$RESULT"`
+	if [ $? -ne 0 ]; then
+		die "Can\`t write to result FILE"
+	fi
+elif [[ ! -w "$RESULT" ]]; then
+	die "Can\`t write to result FILE"
+fi
+parse_file $TEMPLATE $RESULT

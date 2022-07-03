@@ -27,6 +27,14 @@ parse_file() {
 	EPAT="=%>"
 	cat $file_template | while read line; do
 		echo $line
+		step=${#BPAT}
+		for (( i=0; i<${#line}; i++ )); do
+			str="${line:$i:step}"
+			if [[ $str == $BPAT ]]; then
+				echo "${line:($i+step)}"
+			fi
+			# echo "$str"
+		done
 	done
 }
 if [[ $# -eq 0 ]]; then

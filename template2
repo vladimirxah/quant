@@ -1,0 +1,3 @@
+This's the second template. Username is <%=USER=%>
+The script is run on <%=HOSTNAME%=>. USER'S EMAIL IS <%=USER=%>@<%=HOSTNAME=%>
+There is __<%=EMPTRY_VARIABLE=%>___ IN EMPTRY_VARIABLE. AND IT'S MY LOCAL VARIBALE = <%=MY_VAR=%>

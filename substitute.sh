@@ -12,7 +12,7 @@ die() {
 }
 needs_arg() {
 	if [ -z "$OPTARG" ]; then
-		die "No arg for --$OPT option"
+		die "No arg for --$OPT option. Use --$OPT=\$ARG for long notation."
 	fi
 }
 file_exist() {
@@ -83,10 +83,10 @@ shift $((OPTIND-1)) # remove parsed options and args from $@ list
 if [[ ! -e "$RESULT" && $RESULT != "" ]]; then
 	`touch "$RESULT"`
 	if [ $? -ne 0 ]; then
-		die "Can\`t write to result FILE"
+		die "Can\`t write to result file $RESULT"
 	fi
 elif [[ ! -w "$RESULT" && $RESULT != "" ]]; then
-	die "Can\`t write to result FILE"
+	die "Can\`t write to result file $RESULT"
 elif [[ $RESULT != "" ]]; then
 	echo "" > $RESULT
 	parse_file $TEMPLATE >> $RESULT

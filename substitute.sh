@@ -24,8 +24,6 @@ parse_line() {
 	line="$1"
 	line_for=$line
 	PAT="$2"
-	#echo "D F line: $line"
-	#echo "D F PAT: $PAT"
 	step=${#BPAT}
 	declare -A pairs
 	for (( i=0; i<${#line_for}; i++ )); do
@@ -33,11 +31,8 @@ parse_line() {
 		if [[ $str == $BPAT ]]; then
 			VAR="${line_for:($i+step)}"
 			while [[ $VAR =~ $EPAT.* ]]; do
-				#echo "WHILE $VAR"
 				VAR=${VAR%%=%>*}
 			done
-			#VAR=${VAR%%$EPAT*}
-			#eval "ENVVAR=\$$VAR"
 			if [[ ! $VAR =~ $BPAT ]]; then
 				#echo "RESULT - $VAR"
 				eval "ENVVAR=\"\$$VAR\""
@@ -46,7 +41,6 @@ parse_line() {
 				#pairs["$VAR"]="$ENVVAR"
 			fi
 		fi
-		# echo "$str"
 	done
 #if [[ ${#pairs[@]} -eq 0 ]]; then
 #	echo $line
@@ -62,19 +56,8 @@ parse_line() {
 parse_file() {
 	file_template="$1"
 	file_result="$2"
-	#echo "" > $file_result
 	cat $file_template | while read -r line; do
-		#echo "DEBUG: $line"
-		#vstavit WHILE s RegEx and do Zamena Patterna
 		echo $(parse_line "$line" $BPAT) # >> $file_result
-		#step=${#BPAT}
-		#for (( i=0; i<${#line}; i++ )); do
-		#	str="${line:$i:step}"
-		#	if [[ $str == $BPAT ]]; then
-		#		echo "${line:($i+step)}"
-		#	fi
-		#	# echo "$str"
-		#done
 	done
 }
 BPAT="<%="
@@ -97,7 +80,6 @@ while getopts t:r:-: OPT; do
 	esac
 done
 shift $((OPTIND-1)) # remove parsed options and args from $@ list
-#`touch "$RESULT"`
 if [[ ! -e "$RESULT" && $RESULT != "" ]]; then
 	`touch "$RESULT"`
 	if [ $? -ne 0 ]; then

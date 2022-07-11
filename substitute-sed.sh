@@ -24,7 +24,7 @@ parse_file() {
 	file_template="$1"
 	file_result="$2"
 	cat $file_template | while read -r line; do
-		#remove empty patterns
+		#remove empty patterns 
 		PARSED=`echo $line | sed -e "s/$BPAT$EPAT//g"`
 		#change pattern to $VAR
 		PARSED=`echo $PARSED | sed -e "s/$BPAT\(\w\+\)$EPAT/$\U\1/g"`

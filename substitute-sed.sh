@@ -23,16 +23,14 @@ file_exist() {
 parse_file() {
 	file_template="$1"
 	file_result="$2"
-	cat $file_template | while read -r line; do
-		#remove empty patterns 
-		PARSED=`echo $line | sed -e "s/$BPAT$EPAT//g"`
-		#change pattern to $VAR
-		PARSED=`echo $PARSED | sed -e "s/$BPAT\(\w\+\)$EPAT/$\U\1/g"`
-		#add escape chars for eval command work properly
-		PARSED="$(echo $PARSED | sed -E "s,(<|>|\||\\\|&|\(|\)|!|@|~|'|#),\\\\\1,g")"
-		#PARSED=echo "$PARSED"
-		#echo "DEBUG: $PARSED"
-		eval echo $PARSED
+	cat $file_template | while read -r LINE; do
+		#for multiple matches of pattern use grep to store it in variable and iter on it
+            	MATCHES=$(echo $LINE | grep -Eio "$BPAT(\w*)$EPAT")
+            	for i in $MATCHES;do
+                	eval VALMATCH=$(echo $i | sed -e "s/$BPAT\(\w*\)$EPAT/\$\U\1/g")
+                	LINE="${LINE/$i/$VALMATCH}"
+            	done
+            	echo $LINE
 	done
 }
 BPAT="<%="
